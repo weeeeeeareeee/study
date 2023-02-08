@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<script>
+		let obj = { name: 'xj', age: 18, obj1: { sex: '男' } }
+		let arr = [1, 2]
+		//观察函数
+		class Observe {
+			constructor(target){
+				this.target = target
+				if (typeof target !== 'object' || target === null) {
+					return objtarget
+				}
+				//是数组改变原型指向
+				if (Array.isArray(target)) {
+					target.__proto__ = arrProto;
+				}
+
+				for (let key in target) {
+					defineProperty(target, key, target[key])
+				}
+			}
+		}
+		//数据劫持
+		const defineProperty = (obj, key, value) => {
+			Object.defineProperty(obj, key, {
+				configurable: true,
+				enumerable: true,
+				get() {
+					console.log('数据来了');
+					return value
+				},
+				set(v) {
+					console.log(`数据变化为${v}`);
+					value = v
+				}
+			})
+		}
+
+		let arrPrototype = Array.prototype;
+		const arrProto = Object.create(arrPrototype)
+		// ["push", "pop", "shift", "unshift", "splice", "sort", "reverse"].forEach((method) => {
+		// 	var original = arrayProto[method];
+		// })
+		//数组
+		function def(obj, key, val, enumerable) {
+			Object.defineProperty(obj, key, {
+				value: val,
+				enumerable: !!enumerable,
+				writable: true,
+				configurable: true,
+			});
+		}
+		const ob1 = new Observe(obj)
+		console.log(ob1);
+	</script>
+</body>
+
+</html>
