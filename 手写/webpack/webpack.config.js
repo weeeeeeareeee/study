@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-module.exports = {
-	mode:"production"
-}
-=======
 const path = require('path');
 const HTMLplugin = require('html-webpack-plugin');
 module.exports = {
@@ -38,4 +33,3 @@ module.exports = {
 	],
 	devtool: 'inline-source-map',
 };
->>>>>>> parent of d435c0b (Revert "feat：webpack")
