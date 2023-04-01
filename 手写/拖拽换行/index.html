@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<ul class="ul">
+		<li class="li">1</li>
+		<li class="li">2</li>
+		<li class="li">3</li>
+	</ul>
+
+	<script>
+
+		class Rectangle {
+			constructor(x, y, width, height) {
+				if (width < 0) {
+					x = x - (width = -width);
+				}
+
+				if (height < 0) {
+					y = y - (height = -height);
+				}
+
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.left = x;
+				this.right = x + width;
+				this.top = y;
+				this.bottom = y + height;
+				this.cx = x + width / 2;
+				this.cy = y + height / 2;
+			}
+
+			isEmpty() {
+				return this.width <= 0 || this.height <= 0;
+			}
+
+			/**
+			 * @param {Rectangle} rectangle
+			 */
+			intersect(rectangle) {
+				if (rectangle.isEmpty() || this.isEmpty()) {
+					return false;
+				}
+
+				let left = Math.max(rectangle.left, this.left);
+				let right = Math.min(rectangle.right, this.right);
+				let top = Math.max(rectangle.top, this.top);
+				let bottom = Math.min(rectangle.bottom, this.bottom);
+				let width = right - left;
+				let height = bottom - top;
+
+				if (width <=0 || height <= 0) {
+					return;
+				}
+
+				return true;
+			}
+		}
+
+		class DragHandle {
+			constructor(ele) {
+				this.dragging = false
+				this.startX = 0
+				this.startY = 0
+				this.ele = ele
+				ele.addEventListener('mousedown', e => this.startDrag(e))
+				document.addEventListener('mousemove', e => this.moveDrag(e))
+				document.addEventListener('mouseup', e => this.endDrag())
+			}
+			/**
+			 * @param {MouseEvent} e
+			 */
+			startDrag(e) {
+				this.dragging = true
+				console.log(e);
+				this.startX = e.clientX
+				this.startY = e.clientY
+				this.ele .style.position = 'absolute'
+				this.ele .style.left = e.clientX + 'px'
+				this.ele .style.top = e.clientY + 'px'
+			}
+
+			/**
+			 * @param {MouseEvent} e
+			 */
+			moveDrag(e) {
+				if (this.dragging) {
+					this.ele .style.transform = `translate(${e.clientX - this.startX}px,${e.clientY - this.startY}px)`
+				}
+			}
+
+			/**
+			 *
+			 */
+			endDrag(e) {
+				this.dragging = false
+			}
+
+
+		}
+
+		const lis = document.querySelectorAll('.li');
+		for (let i = 0; i < lis.length; i++) {
+			const rectangle = new Rectangle(lis[i].offsetLeft, lis[i].offsetTop, lis[i].offsetWidth, lis[i].offsetHeight)
+			const dragRow = new DragHandle(lis[i])
+			console.log(dragRow);
+		}
+	</script>
+</body>
+
+</html>
