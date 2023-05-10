@@ -7,15 +7,50 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
 	<script>
-		var request = window.indexedDB.open("MyTestDatabase");
-		request.onerror = function (event) {
-			// Do something with request.errorCode!
-			console.error(event.target.error.message);
-		};
-		request.onsuccess = function (event) {
-			// Do something with request.result!
-			console.log(event);
-		};
+		const customerData = [
+			{ id: 1, ssn: "444-44-4444", name: "Bill", age: 35, email: "bill@company.com" },
+			{ id: 2, ssn: "555-55-5555", name: "Donna", age: 32, email: "donna@home.org" }
+		];
+
+		const dbName = 'name1'
+
+		const request = indexedDB.open(dbName); // 1. Open a database named "myDB". (version number defaults to 1)
+
+		request.onerror = (e) => {
+			console.error(e); // Error event. Note that the error message can be accessed using e.target.result.errorMessage.
+		}
+
+		request.onupgradeneeded = (event) => {
+			const db = event.target.result;
+			const objectStore = db.createObjectStore("name2", { keyPath: 'id' });
+
+			objectStore.createIndex("ssn", "ssn", { unique: false })
+			objectStore.createIndex("name", "name", { unique: true })
+			objectStore.createIndex("age", "age", { unique: true })
+			objectStore.createIndex("email", "email", { unique: false })
+			const customerObjectStore = objectStore.transaction.objectStore("name2")
+			// const customerObjectStore = db.transaction("name2", "readwrite").;
+			customerData.forEach(item => {
+				customerObjectStore.add(item)
+			})
+			objectStore.transaction.oncomplete = (e) => {
+
+			} // The store was successfully created in the database.
+
+		}
+
+		const request1 = indexedDB.open(dbName);
+		request1.onsuccess = (event) => {
+			const db = event.target.result;
+			const customerObjectStore = db.transaction(["name2"]).objectStore("name2")
+			customerObjectStore.openCursor().onsuccess = (res) => {
+				var cursor = res.target.result;
+				if (cursor) {
+					console.log(cursor);
+					cursor.continue();
+				}
+			}
+		}
 	</script>
 </head>
 
