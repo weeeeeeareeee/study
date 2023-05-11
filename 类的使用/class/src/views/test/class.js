@@ -1,13 +1,28 @@
 export class Test {
-	id = 1
-
-	list = [1,2,3,4]
-	constructor() {
-		
+	list = [];
+	constructor(list) {
+		this.list = list;
 	}
 
-	dragStart(e, item) {
-		console.log(e);
-		console.log(item);
+	/**
+	 *
+	 * @param {DragEvent} e
+	 * @param {*} item
+	 */
+	dragStart(e, index) {
+		e.dataTransfer.setData('text', index); // or whatever you want to use to store the file in the data store (e.g. URL)
+	}
+
+	/**
+	 *
+	 * @param {DragEvent} e
+	 * @param {*} item
+	 */
+	handleDrop(e, index) {
+		const startIndex = e.dataTransfer.getData('text');
+		let temp = this.list[startIndex];
+		this.list[startIndex] = this.list[index];
+		this.list[index] = temp;
+		console.log(this.list);
 	}
 }

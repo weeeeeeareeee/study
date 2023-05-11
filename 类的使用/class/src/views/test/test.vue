@@ -1,12 +1,15 @@
 <template>
 	<ul>
-		<li class="gray" v-for="item in test.list" @dragstart="$e => test.dragStart($e,item)" draggable="true">{{ item }}</li>
+		<li class="gray" v-for="item,index in test.list" @dragstart="$e => test.dragStart($e, index)" @dragenter.prevent
+			@dragover.prevent @drop.prevent="test.handleDrop($event, item)" draggable="true">
+			{{ item }}
+		</li>
 	</ul>
 </template>
 <script setup>
 import { Test } from './class'
-const test = new Test()
-console.log(window);
+import { ref } from 'vue'
+const test = ref(new Test([1,2,3,4,5]))
 </script>
 <style>
 .gray {
